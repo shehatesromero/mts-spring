@@ -1,11 +1,9 @@
 package ru.mts.hw7.repository;
 
-import org.springframework.stereotype.Repository;
 import ru.mts.hw7.domain.abstraction.Animal;
 
 import java.util.Map;
 
-@Repository
 public interface AnimalsRepository {
 
     String NAME = "mts_AnimalsRepository";

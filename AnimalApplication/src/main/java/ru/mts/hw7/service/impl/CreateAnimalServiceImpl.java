@@ -2,7 +2,7 @@ package ru.mts.hw7.service.impl;
 
 import ru.mts.hw7.domain.abstraction.Animal;
 import ru.mts.hw7.domain.enums.AnimalType;
-import ru.mts.hw7.factory.AnimalFactory;
+import ru.mts.hw7.factory.AbstractAnimalFactory;
 import ru.mts.hw7.service.CreateAnimalService;
 
 import java.util.Objects;
@@ -19,13 +19,13 @@ import static com.google.common.base.Preconditions.checkArgument;
  */
 public class CreateAnimalServiceImpl implements CreateAnimalService {
 
-    private final AnimalFactory animalFactory;
+    private final AbstractAnimalFactory abstractAnimalFactory;
 
     private AnimalType animalType;
 
-    public CreateAnimalServiceImpl(AnimalFactory animalFactory) {
-        checkArgument(Objects.nonNull(animalFactory), "'animalFactory' is null");
-        this.animalFactory = animalFactory;
+    public CreateAnimalServiceImpl(AbstractAnimalFactory abstractAnimalFactory) {
+        checkArgument(Objects.nonNull(abstractAnimalFactory), "'abstractAnimalFactory' is null");
+        this.abstractAnimalFactory = abstractAnimalFactory;
     }
 
     /**
@@ -35,7 +35,9 @@ public class CreateAnimalServiceImpl implements CreateAnimalService {
      */
     @Override
     public Animal createAnimal() {
-        return animalFactory.createAnimal(animalType);
+        var animalFactory = abstractAnimalFactory.createAnimalFactory(animalType);
+
+        return animalFactory.createAnimal();
     }
 
     /**
@@ -54,11 +56,12 @@ public class CreateAnimalServiceImpl implements CreateAnimalService {
     // Метод createUniqueAnimals() создает 10 уникальных животных и выводит их информацию при помощи цикла do while.
     @Override
     public Animal[] createUniqueAnimals() {
+        var factory = abstractAnimalFactory.createAnimalFactory(animalType);
         int animalCounter = 0;
         Animal[] animals = new Animal[10];
 
         do {
-            animals[animalCounter] = animalFactory.createRandomAnimal();
+            animals[animalCounter] = factory.createAnimal();
             animalCounter++;
         } while (animalCounter < 10);
 
@@ -70,9 +73,11 @@ public class CreateAnimalServiceImpl implements CreateAnimalService {
      * при помощи цикла for.
      */
     public Animal[] createUniqueAnimals(int n) {
+        var factory = abstractAnimalFactory.createAnimalFactory(animalType);
+
         Animal[] animals = new Animal[n]; // Создаем массив для хранения животных
         for (int i = 0; i < n; i++) {
-            animals[i] = animalFactory.createRandomAnimal();
+            animals[i] = factory.createAnimal();
         }
 
         return animals;

@@ -2,7 +2,6 @@ package ru.mts.hw7.repository;
 
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.stereotype.Repository;
 import ru.mts.hw7.domain.abstraction.Animal;
 import ru.mts.hw7.service.CreateAnimalService;
 
@@ -11,18 +10,18 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.*;
 
-@Repository
 public class AnimalsRepositoryImpl implements AnimalsRepository {
 
-    private static final int CAPACITY = (Integer.MAX_VALUE / 100_000);
+    private final int capacity;
 
     private final ObjectProvider<CreateAnimalService> createAnimalServicesBeanProvider;
 
-    private final List<Animal> animals = Lists.newArrayListWithCapacity(CAPACITY);
+    private final List<Animal> animals = Lists.newArrayList();
 
     private boolean initialized;
 
-    public AnimalsRepositoryImpl(ObjectProvider<CreateAnimalService> createAnimalServicesBeanProvider) {
+    public AnimalsRepositoryImpl(int repositoryCapacity, ObjectProvider<CreateAnimalService> createAnimalServicesBeanProvider) {
+        capacity = repositoryCapacity;
         this.createAnimalServicesBeanProvider = createAnimalServicesBeanProvider;
     }
 
@@ -31,7 +30,7 @@ public class AnimalsRepositoryImpl implements AnimalsRepository {
         if (!initialized) {
             Animal animal;
             CreateAnimalService prototype;
-            for (int i = 0; i < CAPACITY; i++) {
+            for (int i = 0; i < capacity; i++) {
                 prototype = createAnimalServicesBeanProvider.getIfAvailable();
                 if (Objects.isNull(prototype)) {
                     throw new RuntimeException("Caramba! 'prototype' is null");
@@ -55,7 +54,8 @@ public class AnimalsRepositoryImpl implements AnimalsRepository {
                 animalsReturn.add(animal.getName());
             }
         }
-        return animalsReturn.toArray(new String[0]);
+
+        return animalsReturn.toArray(String[]::new);
     }
 
     @Override
@@ -68,7 +68,7 @@ public class AnimalsRepositoryImpl implements AnimalsRepository {
             }
         }
 
-        return animalsReturn.toArray(new Animal[0]);
+        return animalsReturn.toArray(Animal[]::new);
     }
 
     @Override

@@ -1,8 +1,5 @@
 package ru.mts.hw7.factory;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import ru.mts.hw7.domain.Cat;
 import ru.mts.hw7.domain.Dog;
 import ru.mts.hw7.domain.Shark;
@@ -15,7 +12,7 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Класс CreateOneUniqueAnimal предоставляет собой фабрику животных по типам, а также добавляет функциональность для
@@ -24,7 +21,6 @@ import java.util.Random;
  * животного.
  */
 // 'SimpleFactory'
-@Component
 public final class AnimalSimpleFactory {
 
     private static final Map<Integer, List<String>> BREEDS_DATASET = Map.of(
@@ -39,9 +35,9 @@ public final class AnimalSimpleFactory {
 
     // Метод createOneUniqueAnimal() создает одно уникальное животное основываясь на типе животного (CAT, DOG..).
     public static Animal createRandomAnimal() {
-        var random = new Random();
-
         var types = AnimalType.values();
+        var random = ThreadLocalRandom.current();
+
         int index = random.nextInt(types.length);
 
         return createAnimal(types[index]);
@@ -51,8 +47,6 @@ public final class AnimalSimpleFactory {
         if (animalType == null) {
             throw new IllegalArgumentException("'animalType' is null");
         }
-
-
 
         var breed = generateRandomBreed(animalType.ordinal());
         var name = generateRandomName();
@@ -81,7 +75,7 @@ public final class AnimalSimpleFactory {
             return "Unknown Breed";
         }
 
-        var random = new Random();
+        var random = ThreadLocalRandom.current();
 
         return list.get(random.nextInt(list.size()));
     }
@@ -92,14 +86,14 @@ public final class AnimalSimpleFactory {
                 "Buddy", "Whiskers", "Fang", "Shadow", "Luna", "Rex", "Misty", "Rocky", "Cleo", "Thor"
         );
 
-        var random = new Random();
+        var random = ThreadLocalRandom.current();
 
         return possibleNames.get(random.nextInt(possibleNames.size()));
     }
 
     // Метод generateRandomCost() генерирует случайную стоимость для животного.
     private static BigDecimal generateRandomCost() {
-        var random = new Random();
+        var random = ThreadLocalRandom.current();
 
         return BigDecimal.valueOf(random.nextDouble() * 50000.0);
     }
@@ -107,7 +101,9 @@ public final class AnimalSimpleFactory {
     // Метод randomBirthday() генерирует случайный день рождения, вычитая из нынешнего времени период 30 лет
     private static LocalDate randomBirthday() {
         var now = LocalDate.now();
-        var period = Period.ofDays((new Random().nextInt(365 * 30)));
+        var random = ThreadLocalRandom.current();
+
+        var period = Period.ofDays(random.nextInt(365 * 30));
 
         return now.minus(period);
     }

@@ -1,23 +1,30 @@
-package ru.mts.hw7;
+package ru.mts.hw7.provider;
 
-import java.util.Random;
+import ru.mts.hw7.config.AnimalDataConfig;
 
-public final class AnimalData {
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
+
+import static org.apache.commons.lang3.StringUtils.EMPTY;
+
+public class AnimalDataProvider {
 
     private final AnimalDataConfig config;
-    private final Random random = new Random();
 
-    public AnimalData(AnimalDataConfig config) {
+    public AnimalDataProvider(AnimalDataConfig config) {
         this.config = config;
     }
 
     private String getRandomStringFromConfig(String key) {
-        String[] values = config.get(key);
-        if (values == null) {
-            return null;
+        List<String> values = config.getOrDefault(key, Collections.emptyList());
+        if (values.isEmpty()) {
+            return EMPTY;
         }
 
-        return values[random.nextInt(values.length)];
+        var random = ThreadLocalRandom.current();
+
+        return values.get(random.nextInt(values.size()));
     }
 
     public String getRandomName() {
@@ -43,5 +50,6 @@ public final class AnimalData {
     public String getRandomCharacter() {
         return getRandomStringFromConfig("characters");
     }
+
 }
 

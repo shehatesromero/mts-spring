@@ -2,9 +2,11 @@ package ru.mts.hw7.factory;
 
 import ru.mts.hw7.domain.abstraction.Instance;
 
-public interface Factory {
+/**
+ * @author Vladislav Gruzdov
+ */
+public interface RandomInstanceFactory {
 
-    //'Factory method' pattern
     Instance createRandomInstance();
 
 }
