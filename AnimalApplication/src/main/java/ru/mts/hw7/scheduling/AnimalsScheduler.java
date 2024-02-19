@@ -28,11 +28,12 @@ public class AnimalsScheduler implements AnimalsSchedulerMBean {
     @Scheduled(fixedRate = 60 * 1000)
     @Override
     public void printAllRepositoryMethods() {
-        log.info("Имена в високосный год: ");
-        log.info(Arrays.toString(animalsRepository.findLeapYearNames()));
-        log.info("Дубликаты: ");
-        log.info(String.valueOf(animalsRepository.findDuplicate()));
-        log.info(Arrays.toString(animalsRepository.findOlderAnimal(animalCount)));
+        System.out.println("Имена в високосный год: ");
+        System.out.println(Arrays.toString(animalsRepository.findLeapYearNames()));
+        System.out.println("Дубликаты: ");
+        System.out.println(String.valueOf(animalsRepository.findDuplicate()));
+        System.out.println("Животные, старше " + animalCount + " лет: ");
+        System.out.println(Arrays.toString(animalsRepository.findOlderAnimal(animalCount)));
     }
 
 }
